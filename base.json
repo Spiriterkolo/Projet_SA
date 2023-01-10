@@ -1,0 +1,8 @@
+
+{
+    "epoch":200,
+    "batch_size":1,
+    "image_size":256,
+    "n_loc":16,
+    "loss_type":"CE"
+}
