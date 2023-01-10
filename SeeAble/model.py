@@ -42,14 +42,14 @@ class SeeAble(nn.Module):
     def forward(self,input):
         input = input.permute((0,3,1,2))
         torch.cuda.empty_cache()
-        print(torch.cuda.memory_summary(device=None, abbreviated=True))
+        #print(torch.cuda.memory_summary(device=None, abbreviated=True))
         input = input.to(self.device)
         self.encoder.to(self.device)
-        print(torch.cuda.memory_summary(device=None, abbreviated=True))
+        #print(torch.cuda.memory_summary(device=None, abbreviated=True))
         embedding = self.encoder(input)
         self.encoder.cpu()
         input.cpu()
-        print(torch.cuda.memory_summary(device=None, abbreviated=True))
+        #print(torch.cuda.memory_summary(device=None, abbreviated=True))
         embedding.to(self.device)
         self.projector.to(self.device)
         output = self.projector(embedding)
@@ -140,7 +140,7 @@ def main(args):
                         batch_size=batch_size,
                         shuffle=True,
                         collate_fn=train_dataset.collate_fn,
-                        num_workers=4,
+                        num_workers=2,
                         pin_memory=True,
                         drop_last=True,
                         worker_init_fn=train_dataset.worker_init_fn
@@ -148,14 +148,15 @@ def main(args):
     #print(train_loader)
     print("Training start")
     for i in range(epochs):
-        print(f"Epoch {i}")
-        for k,batch in enumerate(train_loader):
+        for k,batch in tqdm(enumerate(train_loader),desc=f"Epoch {i}"):
             loss = model.training_step(batch,k)
             print(loss.item())
             for optim in model.optims:
-                optim.step()
+                a=0
+                #optim.step()
         for scheduler in model.schedulers:
-            scheduler.step()
+            a=0
+            #scheduler.step()
         
         
     """
