@@ -6,4 +6,4 @@
 *.txt
 *.h5
 
-./data/FaceForensics
+./data/FaceForensics/*
