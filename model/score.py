@@ -78,7 +78,7 @@ def geo_dist(prediction, gt, gamma, nloc):
         return gamma*dgraph(ppos, gtpos)
 
 
-def lgui(predictions, labels, prototypes, gamma, nloc):
+def lgui(predictions, labels, prototypes, gamma, nloc = 16):
     somme = 0
     qi = len(prototypes)/(len(prototypes)-1)
     for i in range(len(predictions)):
