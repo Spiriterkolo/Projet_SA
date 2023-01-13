@@ -83,6 +83,6 @@ def lgui(predictions, labels, prototypes, gamma):
     qi = len(prototypes)/(len(prototypes)-1)
     for i in range(len(predictions)):
         somme += geo_dist(y_prediction(predictions[i], prototypes), labels[i], gamma) * qi
-    return somme
+    return torch.tensor(somme)
 
 
