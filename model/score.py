@@ -86,3 +86,13 @@ def lgui(predictions, labels, prototypes, gamma, nloc = 16):
     return torch.tensor(somme)
 
 
+def dcos(prediction_i, prototypes, label_i):
+    cos = torch.nn.CosineSimilarity()
+    return 1 - cos(prediction_i, prototypes[label_i])
+
+
+def score(predictions, prototypes, labels, h):
+    somme = 0
+    for i in range(len(predictions)):
+        somme += torch.linalg.norm(h[i])*(2-dcos(predictions[i], prototypes, labels[i]))
+    return torch.tensor(somme)
