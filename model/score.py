@@ -65,24 +65,24 @@ def dgraph(pos1, pos2):
     return -delta*delta/2
 
 
-def geo_dist(prediction, gt, gamma):
+def geo_dist(prediction, gt, gamma, nloc):
     ppos = pos(prediction)
     gtpos = pos(gt)
     if ppos == 0:
         return gamma
     elif ppos == gtpos:
         return gamma/4
-    elif ppos == sym(gtpos):
+    elif ppos == sym(gtpos, nloc):
         return gamma/2
     else:
         return gamma*dgraph(ppos, gtpos)
 
 
-def lgui(predictions, labels, prototypes, gamma):
+def lgui(predictions, labels, prototypes, gamma, nloc):
     somme = 0
     qi = len(prototypes)/(len(prototypes)-1)
     for i in range(len(predictions)):
-        somme += geo_dist(y_prediction(predictions[i], prototypes), labels[i], gamma) * qi
+        somme += geo_dist(y_prediction(predictions[i], prototypes), labels[i], gamma, nloc) * qi
     return torch.tensor(somme)
 
 
