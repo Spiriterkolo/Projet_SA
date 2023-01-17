@@ -1,5 +1,4 @@
 import torch
-import math
 
 
 def big_p(label):
@@ -60,9 +59,14 @@ def sym(position, nloc):
     return q * n + r + 1
 
 
-def dgraph(pos1, pos2):
-    delta = pos1 - pos2
-    return -delta*delta/2
+def dgraph(pos1, pos2, nloc):
+    n = int(torch.sqrt(torch.tensor(nloc)).item())
+    r1 = (pos1 - 1) % n
+    q1 = (pos1 - 1) // n
+    r2 = (pos2 - 1) % n
+    q2 = (pos2 - 1) // n
+    distance = (r1 - r2) + (q1 - q2)
+    return abs(distance)
 
 
 def geo_dist(prediction, gt, gamma, nloc):
