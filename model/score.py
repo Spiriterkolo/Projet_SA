@@ -1,5 +1,5 @@
 import torch
-
+import math
 
 def big_p(label):
 
@@ -44,29 +44,29 @@ def y_prediction(prediction_i, prototypes):
         if arg < mini:
             mini = arg
             ypred = k
-    return ypred
+    return torch.tensor(ypred)
 
 
 def pos(label):
-    return int((label+1)/2)
+    return torch.tensor(int((label+1)/2))
 
 
 def sym(position, nloc):
-    n = int(torch.sqrt(torch.tensor(nloc)).item())
-    r = (position-1) % n
-    q = (position-1) // n
+    n = int(torch.sqrt(torch.tensor(nloc)))
+    q = torch.div((position-1), n, rounding_mode='floor')
+    r = torch.remainder((position-1), n)
     r = (n - 1) - r
     return q * n + r + 1
 
 
 def dgraph(pos1, pos2, nloc):
-    n = int(torch.sqrt(torch.tensor(nloc)).item())
-    r1 = (pos1 - 1) % n
-    q1 = (pos1 - 1) // n
-    r2 = (pos2 - 1) % n
-    q2 = (pos2 - 1) // n
+    n = int(torch.sqrt(torch.tensor(nloc)))
+    r1 = torch.remainder((pos1 - 1), n)
+    q1 = torch.div((pos1 - 1), n, rounding_mode='floor')
+    r2 = torch.remainder((pos2 - 1), n)
+    q2 = torch.div((pos2 - 1), n, rounding_mode='floor')
     distance = (r1 - r2) + (q1 - q2)
-    return abs(distance)
+    return torch.abs(distance)
 
 
 def geo_dist(prediction, gt, gamma, nloc):
@@ -83,11 +83,11 @@ def geo_dist(prediction, gt, gamma, nloc):
 
 
 def lgui(predictions, labels, prototypes, gamma, nloc = 16):
-    somme = 0
+    somme = torch.zeros(len(predictions))
     qi = len(prototypes)/(len(prototypes)-1)
     for i in range(len(predictions)):
-        somme += geo_dist(y_prediction(predictions[i], prototypes), labels[i], gamma, nloc) * qi
-    return torch.tensor(somme)
+        somme[i] = geo_dist(y_prediction(predictions[i], prototypes), labels[i], gamma, nloc)
+    return torch.sum(somme) * qi
 
 
 def dcos(prediction_i, prototypes, label_i):
